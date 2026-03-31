@@ -3,10 +3,12 @@ spring:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create
     defer-datasource-initialization: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   sql:
     init:
       mode: always
