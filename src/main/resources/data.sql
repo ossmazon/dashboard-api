@@ -37,3 +37,5 @@ VALUES (9, 'Glenna Reichert', 'Delphine', 'Chaim_McDermott@dana.io', '(775)976-6
 MERGE INTO users (id, name, username, email, phone, website, street, suite, city, zipcode, lat, lng, company_name, catch_phrase, bs)
 KEY(id)
 VALUES (10, 'Clementina DuBuque', 'Moriah.Stanton', 'Rey.Padberg@karina.biz', '024-648-3804', 'ambrose.net', 'Kattie Turnpike', 'Suite 198', 'Lebsackbury', '31428-2261', '-38.2386', '57.2232', 'Hoeger LLC', 'Centralized empowering task-force', 'target end-to-end models');
+
+ALTER TABLE users ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM users);

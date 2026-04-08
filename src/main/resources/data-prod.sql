@@ -37,3 +37,5 @@ WHERE NOT EXISTS (SELECT 1 FROM users WHERE id = 9);
 INSERT INTO users id, name, username, email, phone, website, street, suite, city, zipcode, lat, lng, company_name, catch_phrase, bs
 SELECT 10, 'Clementina DuBuque', 'Moriah.Stanton', 'Rey.Padberg@karina.biz', '024-648-3804', 'ambrose.net', 'Kattie Turnpike', 'Suite 198', 'Lebsackbury', '31428-2261', '-38.2386', '57.2232', 'Hoeger LLC', 'Centralized empowering task-force', 'target end-to-end models';
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE id = 10);
+
+SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
