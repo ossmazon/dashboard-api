@@ -2,6 +2,7 @@ package com.mazon.dashboard_api.controller;
 
 import com.mazon.dashboard_api.model.User;
 import com.mazon.dashboard_api.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,13 +38,13 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
         User savedUser = userRepository.save(user);
         return ResponseEntity.status(201).body(savedUser);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User updatedUser) {
         return userRepository.findById(id)
                 .map(existingUser -> {
                     existingUser.setName(updatedUser.getName());
