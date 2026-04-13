@@ -1,18 +1,33 @@
 package com.mazon.dashboard_api.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Name is required")
     private String name;
     private String username;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
     private String email;
+
+    @NotBlank(message = "Phone is required")
     private String phone;
     private String website;
+
+    @Embedded
+    private Address address;
+
+    @Embedded
+    private Company company;
 
     public String getPhone() {
         return phone;
@@ -29,11 +44,6 @@ public class User {
     public void setWebsite(String website) {
         this.website = website;
     }
-
-    @Embedded
-    private Address address;
-    @Embedded
-    private Company company;
 
     public Long getId() {
         return id;
