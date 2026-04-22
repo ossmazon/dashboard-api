@@ -1,8 +1,12 @@
 package com.mazon.dashboard_api.controller;
 
+
+import com.mazon.dashboard_api.dto.PageResponseDTO;
+import com.mazon.dashboard_api.dto.UserDTO;
 import com.mazon.dashboard_api.model.User;
-import com.mazon.dashboard_api.repository.UserRepository;
+import com.mazon.dashboard_api.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,51 +17,52 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
+
     @GetMapping("/users")
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getUsers() {
+        return userService.getAllUser();
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        return userService.getUserById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        return userRepository.findById(id).map(user -> {
-            userRepository.deleteById(id);
-            return ResponseEntity.noContent().<Void>build();
-        }).orElse(ResponseEntity.notFound().build());
+        if (userService.deleteUser(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.status(201).body(savedUser);
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody User user) {
+
+        UserDTO newUser = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User updatedUser) {
-        return userRepository.findById(id)
-                .map(existingUser -> {
-                    existingUser.setName(updatedUser.getName());
-                    existingUser.setUsername(updatedUser.getUsername());
-                    existingUser.setEmail(updatedUser.getEmail());
-                    existingUser.setPhone(updatedUser.getPhone());
-                    existingUser.setWebsite(updatedUser.getWebsite());
-                    existingUser.setAddress(updatedUser.getAddress());
-                    existingUser.setCompany(updatedUser.getCompany());
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody User updatedUser) {
+        return userService.updateUser(id, updatedUser)
+                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
 
-                    User saved = userRepository.save(existingUser);
-                    return ResponseEntity.ok(saved);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/users/paginated")
+    public PageResponseDTO<UserDTO> getUsersPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return userService.getUsersPaginatedList(page, size, sortBy, direction);
     }
 }
