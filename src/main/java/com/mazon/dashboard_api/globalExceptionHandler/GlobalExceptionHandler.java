@@ -1,4 +1,4 @@
-package com.mazon.dashboard_api.GlobalExceptionHandler;
+package com.mazon.dashboard_api.globalExceptionHandler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
